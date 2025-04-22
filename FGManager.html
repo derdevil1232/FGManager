@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roblox BotFarm Manager</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+    }
+    header {
+      padding: 1em;
+      background-color: #222;
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+    main {
+      padding: 2em;
+    }
+    .hidden {
+      display: none;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background-color: #1e1e1e;
+      padding: 2em;
+      border-radius: 10px;
+    }
+    input[type="email"] {
+      width: 100%;
+      padding: 0.75em;
+      margin-bottom: 1em;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 0.75em;
+      background-color: #6200ea;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #7b1fa2;
+    }
+    .link-btn {
+      background: none;
+      border: none;
+      color: #bbb;
+      text-decoration: underline;
+      margin-top: 1em;
+      cursor: pointer;
+    }
+    .card {
+      background: #2a2a2a;
+      padding: 1em;
+      border-radius: 5px;
+      margin-bottom: 1em;
+    }
+    .copy-box {
+      background-color: #333;
+      padding: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>Roblox BotFarm Manager</header>
+  <main>
+    <section id="auth-section" class="container">
+      <h2 id="auth-title">Sign Up</h2>
+      <input type="email" id="email" placeholder="Enter your email" />
+      <button onclick="handleAuth()">Continue</button>
+      <button class="link-btn" onclick="toggleAuth()">Already have a magic key?</button>
+    </section>
+
+    <section id="home-section" class="container hidden">
+      <h2>Welcome</h2>
+      <button onclick="goToPage('create-group')">Make a new farming group</button>
+      <button onclick="goToPage('manage')">Manage existing farming groups</button>
+    </section>
+
+    <section id="manage-section" class="container hidden">
+      <h2>Manage Accounts</h2>
+      <div class="card">FGM_testing1</div>
+      <div class="card">FGM_testing2</div>
+      <button class="link-btn" onclick="goToPage('home')">← Back</button>
+    </section>
+
+    <section id="create-group-section" class="container hidden">
+      <h2>Create New Farming Group</h2>
+      <ol>
+        <li>Using the account you want to link up, join a game in Roblox with your executor.</li>
+        <li>
+          Execute the following code:
+          <div class="copy-box" onclick="copyCode(this)">Click to copy placeholder code</div>
+        </li>
+        <li>Follow the verification steps on the GUI that pops up.</li>
+      </ol>
+      <button class="link-btn" onclick="goToPage('home')">← Back</button>
+    </section>
+  </main>
+
+  <script>
+    const authSection = document.getElementById('auth-section');
+    const homeSection = document.getElementById('home-section');
+    const manageSection = document.getElementById('manage-section');
+    const createGroupSection = document.getElementById('create-group-section');
+    const authTitle = document.getElementById('auth-title');
+
+    let magicKey = localStorage.getItem('magicKey');
+    if (magicKey) {
+      showSection('home');
+    }
+
+    function handleAuth() {
+      const email = document.getElementById('email').value;
+      if (!email) return alert("Please enter a valid email.");
+
+      if (authTitle.innerText === 'Sign Up') {
+        const generatedKey = 'MAGIC-' + Math.random().toString(36).substr(2, 10);
+        localStorage.setItem('magicKey', generatedKey);
+        alert("Your magic key is: " + generatedKey + "\nKeep it safe and secure!");
+      }
+
+      showSection('home');
+    }
+
+    function toggleAuth() {
+      if (authTitle.innerText === 'Sign Up') {
+        authTitle.innerText = 'Login';
+        document.querySelector('button').innerText = 'Login';
+        document.querySelector('.link-btn').innerText = 'Need a magic key? Sign up';
+      } else {
+        authTitle.innerText = 'Sign Up';
+        document.querySelector('button').innerText = 'Continue';
+        document.querySelector('.link-btn').innerText = 'Already have a magic key?';
+      }
+    }
+
+    function goToPage(page) {
+      showSection(page);
+    }
+
+    function showSection(name) {
+      authSection.classList.add('hidden');
+      homeSection.classList.add('hidden');
+      manageSection.classList.add('hidden');
+      createGroupSection.classList.add('hidden');
+
+      if (name === 'home') homeSection.classList.remove('hidden');
+      if (name === 'manage') manageSection.classList.remove('hidden');
+      if (name === 'create-group') createGroupSection.classList.remove('hidden');
+    }
+
+    function copyCode(el) {
+      navigator.clipboard.writeText("-- Placeholder code").then(() => {
+        el.innerText = "Copied!";
+        setTimeout(() => (el.innerText = "Click to copy placeholder code"), 1500);
+      });
+    }
+  </script>
+</body>
+</html>
